@@ -7,7 +7,7 @@ DBT_CLOUD_CONN_ID = "dbt-conn"
 JOB_ID = "70403104214918"
 
 @dag(
-    start_date=datetime(2024, 4, 18),
+    start_date=datetime(2024, 10, 11),
     schedule="@daily",
     catchup=False,
 )

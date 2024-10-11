@@ -5,7 +5,7 @@ from airflow.models import Variable
 import json
 from datetime import datetime
 
-AIRBYTE_CONNETCION_ID = Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID")
+AIRBYTE_CONNECTION_ID = Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID")
 API_KEY = f'Bearer {Variable.get("AIRBYTE_API_TOKEN")}'
 
 
@@ -21,7 +21,7 @@ def running_airbyte():
                  "User-Agent":"fake-useragent", 
                  "Accept":"application/json",
                  "Authorization": API_KEY},
-        data=json.dumps({"connectionId": AIRBYTE_CONNETCION_ID, "jobType":"sync"}),  # Assegure que o connectionId está correto
+        data=json.dumps({"connectionId": AIRBYTE_CONNECTION_ID, "jobType":"sync"}),  # Assegure que o connectionId está correto
         response_check=lambda response: response.json()['status'] == 'running'
     )
 
