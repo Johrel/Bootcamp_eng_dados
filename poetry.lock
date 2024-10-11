@@ -448,6 +448,27 @@ openlineage = ["apache-airflow-providers-openlineage"]
 pandas = ["pandas (>=1.5.3,<2.2)", "pandas (>=2.1.2,<2.2)"]
 
 [[package]]
+name = "apache-airflow-providers-dbt-cloud"
+version = "3.10.1"
+description = "Provider package apache-airflow-providers-dbt-cloud for Apache Airflow"
+optional = false
+python-versions = "~=3.8"
+files = [
+    {file = "apache_airflow_providers_dbt_cloud-3.10.1-py3-none-any.whl", hash = "sha256:2ae31c5f28afdc7cb0c321ba4d38a6703c42a402f462300ea39dd3aeb1793499"},
+    {file = "apache_airflow_providers_dbt_cloud-3.10.1.tar.gz", hash = "sha256:64da9d7fd3dc74d06cc9228c01dd71a1b0c06c9ae21d213a3b662530ec6440f2"},
+]
+
+[package.dependencies]
+aiohttp = ">=3.9.2"
+apache-airflow = ">=2.8.0"
+apache-airflow-providers-http = "*"
+asgiref = "*"
+
+[package.extras]
+http = ["apache-airflow-providers-http"]
+openlineage = ["apache-airflow-providers-openlineage (>=1.7.0)"]
+
+[[package]]
 name = "apache-airflow-providers-fab"
 version = "1.4.0"
 description = "Provider package apache-airflow-providers-fab for Apache Airflow"
@@ -3836,4 +3857,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "==3.11.5"
-content-hash = "8f9222d7c6079fd3965f4d602ad8cc97fd5a26446cd19f8b50425883e771e8bc"
+content-hash = "74d1325bc2ae25229db236d01eba480c99ebafa5576b41ea4c314ec3b966a429"
