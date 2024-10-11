@@ -6,7 +6,7 @@ from datetime import datetime
         dag_id="DAG_Airflow",
         description="minha etl braba",
         schedule="0 12 * 1-12 *", ##crontab.guru
-        start_date=datetime(2024,1,1),
+        start_date=datetime(2024,10,11),
         catchup=False #backfill
 )
 def DAG_Airflow():
