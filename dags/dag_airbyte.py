@@ -9,7 +9,7 @@ AIRBYTE_CONNECTION_ID = Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID")
 API_KEY = f'Bearer {Variable.get("AIRBYTE_API_TOKEN")}'
 
 
-@dag(start_date=datetime(2024, 10, 11), schedule_interval="@daily", catchup=False)
+@dag(start_date=datetime(2024, 4, 18), schedule_interval="@daily", catchup=False)
 def running_airbyte():
 
     start_airbyte_sync = SimpleHttpOperator(
