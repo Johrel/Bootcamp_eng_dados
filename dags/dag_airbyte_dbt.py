@@ -3,8 +3,8 @@ from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.models import Variable
 import json
 from datetime import datetime
-from time import sleep, time
 from airflow.providers.dbt.cloud.operators.dbt import DbtCloudRunJobOperator
+import time 
 import os
 import json
 import requests
@@ -35,7 +35,7 @@ def get_new_token(**kwargs):
         raise Exception(f"Erro ao obter token: {response.status_code} - {response.text}")
     
     # Adiciona um tempo de espera antes de iniciar a sincronização
-    time.sleep(180)  # Pausa de 30 segundos (ajuste conforme necessário)
+    time.sleep(2)  # Pausa de 30 segundos (ajuste conforme necessário)
 
 # Argumentos padrão da DAG
 default_args = {
@@ -74,7 +74,7 @@ def running_airbyte_dbt():
 
     @task
     def esperar():
-        time.sleep(10)
+        time.sleep(180)
 
     trigger_job = DbtCloudRunJobOperator(
         task_id="trigger_dbt_cloud_job",

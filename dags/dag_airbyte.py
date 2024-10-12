@@ -4,7 +4,7 @@ from airflow.providers.http.sensors.http import HttpSensor
 from airflow.models import Variable
 import json
 from datetime import datetime
-import os
+
 
 AIRBYTE_CONNECTION_ID = Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID")
 API_KEY = f'Bearer {Variable.get("AIRBYTE_JWT")}'
