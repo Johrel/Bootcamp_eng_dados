@@ -19,9 +19,6 @@ def get_new_jwt():
     client_id = os.getenv("AIRBYTE_CLIENT_ID")
     client_secret = os.getenv("AIRBYTE_CLIENT_SECRET")
 
-    if not client_id or not client_secret:
-        raise Exception("As credenciais AIRBYTE_CLIENT_ID ou AIRBYTE_CLIENT_SECRET estão ausentes")
-
     response = requests.post('https://api.airbyte.com/api/v1/applications/token', 
                              json={"client_id": client_id, "client_secret": client_secret},
                              headers={"Content-Type": "application/json"})
