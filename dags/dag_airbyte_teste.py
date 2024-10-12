@@ -6,48 +6,52 @@ import requests
 import os
 from dotenv import load_dotenv
 from airflow.operators.python import PythonOperator
-from datetime import datetime, timedelta
+from airflow import DAG
+from datetime import datetime
 
-# Carregar variáveis do arquivo .env
+# Carregar variáveis do .env
 load_dotenv()
 
-CLIENT_ID = os.getenv('CLIENT_ID')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
-
-# Função para obter o access token
-def get_access_token():
-    url = "https://api.airbyte.com/v1/applications/token"
-    
+def get_new_token():
+    # URL para obter o token
+    url = "https://api.airbyte.com/auth/token"  # Substitua pela URL correta da API
     payload = {
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET
+        'client_id': os.getenv("AIRBYTE_CLIENT_ID"),
+        'client_secret': os.getenv("AIRBYTE_CLIENT_SECRET")
     }
-    headers = {
-        "accept": "application/json",
-        "content-type": "application/json"
-    }
-    
-    response = requests.post(url, json=payload, headers=headers)
+    response = requests.post(url, json=payload)
     
     if response.status_code == 200:
-        token = response.json().get('access_token')  # Ajuste conforme a estrutura da resposta
-        return token
+        token = response.json().get('token')  # Ajuste isso com base na resposta da sua API
+        return f'Bearer {token}'
     else:
-        raise Exception(f"Error obtaining access token: {response.text}")
+        raise Exception(f"Erro ao obter token: {response.status_code} - {response.text}")
 
-# DAG do Airflow
 default_args = {
     'owner': 'airflow',
+    'start_date': datetime(2023, 10, 1),
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
 }
+
+with DAG('example_dag', default_args=default_args, schedule_interval='@daily') as dag:
+    
+    def task_using_token():
+        # Captura um novo token a cada execução
+        api_key = get_new_token()
+        print(f"Token: {api_key}")
+        # Continue com a lógica da sua DAG usando o token
+        
+    get_token_task = PythonOperator(
+        task_id='get_token_task',
+        python_callable=task_using_token,
+    )
 
 @dag(default_args=default_args, start_date=datetime(2024, 4, 18), schedule_interval="@daily", catchup=False)
 def running_airbyte():
     # Tarefa para obter o access token
     get_token_task = PythonOperator(
         task_id='get_access_token',
-        python_callable=get_access_token,
+        python_callable=get_token_task,
         do_xcom_push=True,  # Habilitar para que o token seja enviado para o XCom
     )
 
