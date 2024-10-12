@@ -19,15 +19,19 @@ def get_new_jwt():
     client_id = os.getenv("AIRBYTE_CLIENT_ID")
     client_secret = os.getenv("AIRBYTE_CLIENT_SECRET")
 
+    if not client_id or not client_secret:
+        raise Exception("As credenciais AIRBYTE_CLIENT_ID ou AIRBYTE_CLIENT_SECRET estão ausentes")
+
     response = requests.post('https://api.airbyte.com/api/v1/applications/token', 
                              json={"client_id": client_id, "client_secret": client_secret},
                              headers={"Content-Type": "application/json"})
     
     if response.status_code == 200:
         token_info = response.json()
-        return token_info['token'], token_info.get('expires_in', 3600)  # Obtenha o tempo de expiração
+        return token_info['token'], token_info.get('expires_in', 3600)
     else:
-        raise Exception("Erro ao obter novo token JWT")
+        raise Exception(f"Erro ao obter novo token JWT. Status code: {response.status_code}, Response: {response.text}")
+
 
 # Função para obter o token JWT, gerando um novo se necessário
 def get_jwt():
