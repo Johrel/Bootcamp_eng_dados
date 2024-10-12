@@ -70,7 +70,7 @@ def running_airbyte_dbt():
         "jobType": "sync"
     }),
     response_check=lambda response: response.json().get('status') == 'running'
-    )
+)
 
     @task
     def esperar():
@@ -86,6 +86,6 @@ def running_airbyte_dbt():
 
     t1 = esperar()
     # Define task dependencies
-    start_airbyte_sync >> t1 >> trigger_job
+    get_token_task >> start_airbyte_sync >> t1 >> trigger_job
 
 dag_instance = running_airbyte_dbt()
