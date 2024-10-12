@@ -37,7 +37,7 @@ default_args = {
 
 # Definindo o DAG com o decorador
 @dag(default_args=default_args, schedule_interval="@daily", catchup=False)
-def airbyte_sync_dag():
+def running_airbyte_sync():
 
     # Task para obter o token antes de qualquer operação
     get_token_task = PythonOperator(
@@ -67,4 +67,4 @@ def airbyte_sync_dag():
     get_token_task >> start_airbyte_sync
 
 # Instancia a DAG
-dag_instance = airbyte_sync_dag()
+dag_instance = running_airbyte_sync()
