@@ -4,6 +4,7 @@ from airflow.providers.http.sensors.http import HttpSensor
 from airflow.models import Variable
 import json
 from datetime import datetime
+import os
 
 AIRBYTE_CONNECTION_ID = Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID")
 API_KEY = f'Bearer {Variable.get("AIRBYTE_JWT")}'
@@ -15,12 +16,14 @@ def running_airbyte():
     start_airbyte_sync = SimpleHttpOperator(
         task_id='start_airbyte_sync',
         http_conn_id='airbyte_default',
-        endpoint=f'/v1/jobs',  # api/v1/connections/sync Endpoint correto para disparar a sincronização
+        endpoint=f'/v1/applications/token',  # api/v1/connections/sync Endpoint correto para disparar a sincronização
         method='POST',
         headers={"Content-Type": "application/json", 
                  "User-Agent":"fake-useragent", 
                  "Accept":"application/json",
                  "Authorization": API_KEY},
+        payload = {'client_id': os.getenv("AIRBYTE_CLIENT_ID"),
+                    'client_secret': os.getenv("AIRBYTE_CLIENT_SECRET")},
         data=json.dumps({"connectionId": AIRBYTE_CONNECTION_ID, "jobType":"sync"}),  # Assegure que o connectionId está correto
         response_check=lambda response: response.json()['status'] == 'running'
     )
