@@ -2,58 +2,65 @@ from airflow.decorators import dag
 from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.models import Variable
 import json
-from datetime import datetime
 import requests
 import os
-import time
 from dotenv import load_dotenv
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from datetime import datetime, timedelta
 
-# Carrega as variáveis do arquivo .env
+# Carregar variáveis do arquivo .env
 load_dotenv()
 
-# Função para obter um novo token JWT
-def get_new_jwt():
-    client_id = os.getenv("AIRBYTE_CLIENT_ID")
-    client_secret = os.getenv("AIRBYTE_CLIENT_SECRET")
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
 
-    if not client_id or not client_secret:
-        raise Exception("As credenciais AIRBYTE_CLIENT_ID ou AIRBYTE_CLIENT_SECRET estão ausentes")
-
+# Função para obter o access token
+def get_access_token():
     url = "https://api.airbyte.com/v1/applications/token"
+    
     payload = {
-        "client_id": client_id,
-        "client_secret": client_secret
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET
     }
     headers = {
         "accept": "application/json",
         "content-type": "application/json"
     }
-
+    
     response = requests.post(url, json=payload, headers=headers)
     
     if response.status_code == 200:
-        token_info = response.json()
-        return token_info['token'], token_info.get('expires_in', 3600)  # Obtenha o tempo de expiração
+        token = response.json().get('access_token')  # Ajuste conforme a estrutura da resposta
+        # Armazenar o token em um lugar adequado (ex: variável global, banco de dados, etc.)
+        return token
     else:
-        raise Exception(f"Erro ao obter novo token JWT. Status code: {response.status_code}, Response: {response.text}")
+        raise Exception(f"Error obtaining access token: {response.text}")
 
-# Função para obter o token JWT, gerando um novo se necessário
-def get_jwt():
-    token_data = Variable.get("AIRBYTE_JWT", deserialize_json=True)
+# DAG do Airflow
+default_args = {
+    'owner': 'airflow',
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
 
-    # Verifica se o token está presente e se está expirado
-    if token_data and 'token' in token_data and 'expiration' in token_data:
-        if token_data['expiration'] > time.time():
-            return token_data['token']  # Retorna o token se ainda for válido
+dag = DAG(
+    'example_dag',
+    default_args=default_args,
+    description='DAG to use Airbyte API with dynamic token',
+    schedule_interval=timedelta(days=1),
+    start_date=datetime(2023, 10, 12),
+)
 
-    # Caso contrário, gera um novo token
-    token, expires_in = get_new_jwt()
-    expiration = time.time() + expires_in
-    Variable.set("AIRBYTE_JWT", {"token": token, "expiration": expiration}, serialize_json=True)
-    return token
+# Tarefa para obter o access token
+get_token_task = PythonOperator(
+    task_id='get_access_token',
+    python_callable=get_access_token,
+    dag=dag,
+)
 
 # Em sua DAG, sempre use a função get_jwt()
-API_KEY = get_jwt()
+API_KEY = get_token_task
 AIRBYTE_CONNECTION_ID = Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID")
 
 @dag(start_date=datetime(2024, 4, 18), schedule_interval="@daily", catchup=False)
