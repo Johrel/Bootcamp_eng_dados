@@ -126,7 +126,6 @@ celerybeat.pid
 # Environments
 .env
 .venv
-modern_data_stackbootcamp_eng_dados/
 env/
 venv/
 ENV/
