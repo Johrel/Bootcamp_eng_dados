@@ -7,6 +7,7 @@ from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.models import Variable
 from datetime import datetime
 import time 
+
 # Função para obter o token da API do Airbyte
 def get_new_token(**kwargs):
     url = "https://api.airbyte.com/v1/applications/token"  # URL correta para obter o token
