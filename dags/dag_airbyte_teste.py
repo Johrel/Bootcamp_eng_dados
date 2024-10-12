@@ -1,82 +1,71 @@
 import os
 import json
 import requests
-from dotenv import load_dotenv
-from airflow import DAG
 from airflow.decorators import dag
-from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.models import Variable
 from datetime import datetime
 
-# Carregar variáveis do .env
-load_dotenv()
-
-def get_new_token():
-    # URL para obter o token
-    url = "https://api.airbyte.com/v1/applications/token"  # Substitua pela URL correta da API
+# Função para obter o token da API do Airbyte
+def get_new_token(**kwargs):
+    url = "https://api.airbyte.com/v1/applications/token"  # URL correta para obter o token
     payload = {
-        'client_id': os.getenv("AIRBYTE_CLIENT_ID"),
-        'client_secret': os.getenv("AIRBYTE_CLIENT_SECRET")
+        "client_id": os.getenv("AIRBYTE_CLIENT_ID"),
+        "client_secret": os.getenv("AIRBYTE_CLIENT_SECRET")
     }
     headers = {
-    "accept": "application/json",
-    "content-type": "application/json"
+        "accept": "application/json",
+        "content-type": "application/json"
     }
     response = requests.post(url, json=payload, headers=headers)
     
     if response.status_code == 200:
-        token = response.json().get('token')  # Ajuste isso com base na resposta da sua API
-        return f'Bearer {token}'
+        # Captura o token da resposta
+        token = response.json().get('access_token')
+        # Armazena o token usando XCom para ser usado em outras tarefas
+        kwargs['ti'].xcom_push(key='airbyte_token', value=token)
     else:
         raise Exception(f"Erro ao obter token: {response.status_code} - {response.text}")
 
+# Argumentos padrão da DAG
 default_args = {
     'owner': 'airflow',
     'start_date': datetime(2023, 10, 1),
     'retries': 1,
 }
 
+# Definindo o DAG com o decorador
 @dag(default_args=default_args, schedule_interval="@daily", catchup=False)
-def running_airbyte():
-    
-    def task_using_token(**kwargs):
-        # Captura um novo token a cada execução
-        api_key = get_new_token()
-        kwargs['ti'].xcom_push(key='api_key', value=api_key)
-        print(f"Token: {api_key}")
-        
+def airbyte_sync_dag():
+
+    # Task para obter o token antes de qualquer operação
     get_token_task = PythonOperator(
         task_id='get_access_token',
-        python_callable=task_using_token,
-        provide_context=True,  # Habilitar para que kwargs funcione
+        python_callable=get_new_token,
+        provide_context=True  # Permite que a função acesse o contexto de execução (kwargs)
     )
 
-    # Recuperando o token do XCom
-    def get_token(**kwargs):
-        return kwargs['ti'].xcom_pull(task_ids='get_access_token', key='api_key')
-
-    # Tarefa para iniciar a sincronização do Airbyte
+    # Task para iniciar a sincronização no Airbyte
     start_airbyte_sync = SimpleHttpOperator(
         task_id='start_airbyte_sync',
         http_conn_id='airbyte_default',
-        endpoint='/v1/jobs',  # Endpoint correto para disparar a sincronização
+        endpoint='/v1/jobs',  # Endpoint correto para iniciar a sincronização
         method='POST',
         headers={
             "Content-Type": "application/json", 
-            "User-Agent": "fake-useragent", 
-            "Accept": "application/json",
-            "Authorization": "{{ task_instance.xcom_pull(task_ids='get_access_token', key='api_key') }}"  # Usando Jinja para puxar o token do XCom
+            # Pega o token diretamente do XCom
+            "Authorization": "{{ task_instance.xcom_pull(task_ids='get_access_token', key='airbyte_token') }}"
         },
         data=json.dumps({
             "connectionId": Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID"),
             "jobType": "sync"
-        }),  # Assegure que o connectionId está correto
+        }),
         response_check=lambda response: response.json().get('status') == 'running'
     )
 
-    # Definindo a ordem de execução
-    get_token_task >> start_airbyte_sync  
+    # Define a sequência de execução das tasks
+    get_token_task >> start_airbyte_sync
 
-# Instanciando a DAG
-dag_instance = running_airbyte()
+# Instancia a DAG
+dag_instance = airbyte_sync_dag()
