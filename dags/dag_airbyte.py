@@ -22,8 +22,6 @@ def running_airbyte():
                  "User-Agent":"fake-useragent", 
                  "Accept":"application/json",
                  "Authorization": API_KEY},
-        payload = {'client_id': os.getenv("AIRBYTE_CLIENT_ID"),
-                    'client_secret': os.getenv("AIRBYTE_CLIENT_SECRET")},
         data=json.dumps({"connectionId": AIRBYTE_CONNECTION_ID, "jobType":"sync"}),  # Assegure que o connectionId está correto
         response_check=lambda response: response.json()['status'] == 'running'
     )
