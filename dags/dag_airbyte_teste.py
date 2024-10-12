@@ -7,8 +7,6 @@ from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.models import Variable
 from datetime import datetime
 
-AIRBYTE_CONNECTION_ID = Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID")
-
 # Função para obter o token da API do Airbyte
 def get_new_token(**kwargs):
     url = "https://api.airbyte.com/v1/applications/token"  # URL correta para obter o token
@@ -50,19 +48,20 @@ def airbyte_sync_dag():
 
     # Task para iniciar a sincronização no Airbyte
     start_airbyte_sync = SimpleHttpOperator(
-        task_id='start_airbyte_sync',
-        http_conn_id='airbyte_default',
-        endpoint='/v1/applications/token',  # Endpoint correto para iniciar a sincronização
-        method='POST',
-        headers={
-            "Content-Type": "application/json", 
-            # Pega o token diretamente do XCom
-            "Authorization": "{{ task_instance.xcom_pull(task_ids='get_access_token', key='airbyte_token') }}"
-        },
-        data=json.dumps({"connectionId": AIRBYTE_CONNECTION_ID, "jobType":"sync"}),  # Assegure que o connectionId está correto
-        response_check=lambda response: response.json()['status'] == 'running'
-    )
-    
+    task_id='start_airbyte_sync',
+    http_conn_id='airbyte_default',
+    endpoint='/v1/jobs',
+    method='POST',
+    headers={
+        "Content-Type": "application/json", 
+        "Authorization": "Bearer {{ task_instance.xcom_pull(task_ids='get_access_token', key='airbyte_token') }}"
+    },
+    data=json.dumps({
+        "connectionId": Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID"),
+        "jobType": "sync"
+    }),
+    response_check=lambda response: response.json().get('status') == 'running'
+)
 
     # Define a sequência de execução das tasks
     get_token_task >> start_airbyte_sync
