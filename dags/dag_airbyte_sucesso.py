@@ -26,20 +26,14 @@ def get_new_jwt():
                              json={"client_id": client_id, "client_secret": client_secret},
                              headers={"Content-Type": "application/json"})
     
-    response = requests.post('https://api.airbyte.com/api/v1/applications/token', 
-                         json={"client_id": client_id, "client_secret": client_secret},
-                         headers={"Content-Type": "application/json"})
-
-    print(f"Status Code: {response.status_code}")
-    print(f"Response Text: {response.text}")
-
-    if response.status_code == 200 and response.text:
+    
+    if response.status_code == 200:
         token_info = response.json()
         return token_info['token'], token_info.get('expires_in', 3600)
     else:
         raise Exception(f"Erro ao obter novo token JWT. Status code: {response.status_code}, Response: {response.text}")
 
-    
+
 # Função para obter o token JWT, gerando um novo se necessário
 def get_jwt():
     token_data = Variable.get("AIRBYTE_JWT", deserialize_json=True)
