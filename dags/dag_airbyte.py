@@ -11,12 +11,10 @@ from dotenv import load_dotenv
 AIRBYTE_CONNECTION_ID = Variable.get("AIRBYTE_GOOGLE_POSTGRES_CONNECTION_ID")
 load_dotenv()
 
-client_id = os.getenv("AIRBYTE_CLIENT_ID")
-client_secret = os.getenv("AIRBYTE_CLIENT_SECRET")
-
 def get_new_jwt():
 # Carregar variáveis de ambiente do arquivo .env
-    
+    client_id = os.getenv("AIRBYTE_CLIENT_ID")
+    client_secret = os.getenv("AIRBYTE_CLIENT_SECRET")
 
     # Implemente a lógica para obter um novo token JWT aqui
     response = requests.post('https://api.airbyte.com/api/v1/applications/token', 
