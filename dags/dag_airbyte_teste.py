@@ -14,12 +14,16 @@ load_dotenv()
 
 def get_new_token():
     # URL para obter o token
-    url = "https://api.airbyte.com/auth/token"  # Substitua pela URL correta da API
+    url = "https://api.airbyte.com/v1/applications/token"  # Substitua pela URL correta da API
     payload = {
         'client_id': os.getenv("AIRBYTE_CLIENT_ID"),
         'client_secret': os.getenv("AIRBYTE_CLIENT_SECRET")
     }
-    response = requests.post(url, json=payload)
+    headers = {
+    "accept": "application/json",
+    "content-type": "application/json"
+    }
+    response = requests.post(url, json=payload, headers=headers)
     
     if response.status_code == 200:
         token = response.json().get('token')  # Ajuste isso com base na resposta da sua API
