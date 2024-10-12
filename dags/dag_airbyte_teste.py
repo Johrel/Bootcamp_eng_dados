@@ -52,7 +52,7 @@ def airbyte_sync_dag():
     start_airbyte_sync = SimpleHttpOperator(
         task_id='start_airbyte_sync',
         http_conn_id='airbyte_default',
-        endpoint='/v1/applications/tokeN',  # Endpoint correto para iniciar a sincronização
+        endpoint='/v1/applications/token',  # Endpoint correto para iniciar a sincronização
         method='POST',
         headers={
             "Content-Type": "application/json", 
