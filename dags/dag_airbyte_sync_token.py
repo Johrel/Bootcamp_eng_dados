@@ -31,7 +31,7 @@ def get_new_token(**kwargs):
 # Argumentos padrão da DAG
 default_args = {
     'owner': 'airflow',
-    'start_date': datetime(2023, 10, 1),
+    'start_date': datetime(2024, 10, 11),
     'retries': 1,
 }
 
