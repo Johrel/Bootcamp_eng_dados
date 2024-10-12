@@ -15,7 +15,7 @@ def running_airbyte():
     start_airbyte_sync = SimpleHttpOperator(
         task_id='start_airbyte_sync',
         http_conn_id='airbyte_default',
-        endpoint='/api/v1/',  # api/v1/connections/sync Endpoint correto para disparar a sincronização
+        endpoint='/v1/jobs',  # api/v1/connections/sync Endpoint correto para disparar a sincronização
         method='POST',
         headers={"Content-Type": "application/json", 
                     "User-Agent":"fake-useragent", 
