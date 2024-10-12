@@ -46,7 +46,7 @@ default_args = {
 
 # Definindo o DAG com o decorador
 @dag(default_args=default_args, schedule_interval="@daily", catchup=False)
-def running_airbyte_sync():
+def running_airbyte_dbt():
 
     # Task para obter o token antes de qualquer operação
     get_token_task = PythonOperator(
@@ -70,7 +70,7 @@ def running_airbyte_sync():
         "jobType": "sync"
     }),
     response_check=lambda response: response.json().get('status') == 'running'
-)
+    )
 
     @task
     def esperar():
@@ -86,6 +86,6 @@ def running_airbyte_sync():
 
     t1 = esperar()
     # Define task dependencies
-    get_token_task >> start_airbyte_sync >> t1 >> trigger_job
+    start_airbyte_sync >> t1 >> trigger_job
 
-dag_instance = running_airbyte_sync()
+dag_instance = running_airbyte_dbt()
