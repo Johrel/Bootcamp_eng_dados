@@ -31,7 +31,7 @@ def get_new_jwt():
 
 # Função para obter o token JWT, gerando um novo se necessário
 def get_jwt():
-    token_data = Variable.get("AIRBYTE_API_TOKEN", deserialize_json=True)
+    token_data = Variable.get("AIRBYTE_JWT", deserialize_json=True)
 
     # Verifica se o token está presente e se está expirado
     if token_data and 'token' in token_data and 'expiration' in token_data:
@@ -41,7 +41,7 @@ def get_jwt():
     # Caso contrário, gera um novo token
     token, expires_in = get_new_jwt()
     expiration = time.time() + expires_in
-    Variable.set("AIRBYTE_API_TOKEN", {"token": token, "expiration": expiration}, serialize_json=True)
+    Variable.set("AIRBYTE_JWT", {"token": token, "expiration": expiration}, serialize_json=True)
     return token
 
 # Em sua DAG, sempre use a função get_jwt()
