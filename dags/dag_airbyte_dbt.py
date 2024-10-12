@@ -35,7 +35,7 @@ def get_new_token(**kwargs):
         raise Exception(f"Erro ao obter token: {response.status_code} - {response.text}")
     
     # Adiciona um tempo de espera antes de iniciar a sincronização
-    time.sleep(2)  # Pausa de 30 segundos (ajuste conforme necessário)
+    time.sleep(180)  # Pausa de 30 segundos (ajuste conforme necessário)
 
 # Argumentos padrão da DAG
 default_args = {
