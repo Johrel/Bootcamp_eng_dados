@@ -20,8 +20,6 @@ def running_airbyte():
         headers={"Content-Type": "application/json", 
                     "User-Agent":"fake-useragent", 
                     "Accept":"application/json",
-                    "client_id": "942195ea-999e-4f17-8d52-277fb5453949",
-                    "client_secret": "hCGX2rYkLaD9vKH9csFYbR75wXIlGJkQ",
                     "Authorization": API_KEY},
         data=json.dumps({"connectionId": AIRBYTE_CONNECTION_ID, "jobType":"sync"}),  # Assegure que o connectionId está correto
          response_check=lambda response: response.json().get('status') == 'running'
