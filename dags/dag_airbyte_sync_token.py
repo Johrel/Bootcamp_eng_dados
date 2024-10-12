@@ -5,7 +5,7 @@ from airflow.decorators import dag
 from airflow.operators.python import PythonOperator
 from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.models import Variable
-from datetime import datetime
+from datetime import datetime, time
 
 # Função para obter o token da API do Airbyte
 def get_new_token(**kwargs):
@@ -27,6 +27,9 @@ def get_new_token(**kwargs):
         kwargs['ti'].xcom_push(key='airbyte_token', value=token)
     else:
         raise Exception(f"Erro ao obter token: {response.status_code} - {response.text}")
+    
+    # Adiciona um tempo de espera antes de iniciar a sincronização
+    time.sleep(2)  # Pausa de 30 segundos (ajuste conforme necessário)
 
 # Argumentos padrão da DAG
 default_args = {
