@@ -35,7 +35,7 @@ def get_new_token(**kwargs):
         raise Exception(f"Erro ao obter token: {response.status_code} - {response.text}")
     
     # Adiciona um tempo de espera antes de iniciar a sincronização
-    time.sleep(2)  # Pausa de 30 segundos (ajuste conforme necessário)
+    time.sleep(5)  # Pausa de 30 segundos (ajuste conforme necessário)
 
 # Argumentos padrão da DAG
 default_args = {
@@ -46,7 +46,7 @@ default_args = {
 
 # Definindo o DAG com o decorador
 @dag(default_args=default_args, schedule_interval="@daily", catchup=False)
-def running_airbyte_dbt():
+def running_airbyte_sync():
 
     # Task para obter o token antes de qualquer operação
     get_token_task = PythonOperator(
@@ -70,7 +70,7 @@ def running_airbyte_dbt():
         "jobType": "sync"
     }),
     response_check=lambda response: response.json().get('status') == 'running'
-    )
+)
 
     @task
     def esperar():
@@ -86,6 +86,6 @@ def running_airbyte_dbt():
 
     t1 = esperar()
     # Define task dependencies
-    start_airbyte_sync >> t1 >> trigger_job
+    get_token_task >> start_airbyte_sync >> t1 >> trigger_job
 
-dag_instance = running_airbyte_dbt()
+dag_instance = running_airbyte_sync()
