@@ -22,27 +22,31 @@
 
 <h1 align="center">🚀 Criando um Pipeline de Dados Completo com Airbyte, PostgreSQL, dbt e Airflow! 🚀</h1><p align="center">
 
-Nos últimos dias, trabalhei em um projeto desafiador e gratificante, criando uma orquestração de ETL (Extração, Transformação e Carga) utilizando várias ferramentas que integram a Engenharia de Dados com soluções de BI. 
+# 🚀 Criando um Pipeline de Dados Completo com Airbyte, PostgreSQL, dbt e Airflow! 🚀
+
+Nos últimos dias, trabalhei em um projeto desafiador e gratificante, criando uma orquestração de ETL utilizando várias ferramentas que integram a Engenharia de Dados com soluções de BI, com a ajuda de tutoriais do YouTube feitos pelo professor Luciano Vasconcelos Filho.
+
+**Link do canal:** [Jornada de Dados](https://www.youtube.com/@JornadaDeDados)
+
+---
+
+## Sobre o projeto:
 
 Confira as etapas que segui para construir este pipeline e facilitar a análise e visualização de dados em plataformas como Power BI, Looker e Superset:
 
-## 1️⃣ Fontes de Dados
-Iniciei extraindo dados de fontes como **Google Analytics**, **Facebook Ads** e **Google Sheets**, para mostrar as diversas origens possíveis que podemos utilizar. Essas fontes oferecem insights importantes sobre métricas digitais e foram a base da ingestão de dados.
+1. **Fontes de Dados:** Iniciei extraindo dados do Google Sheets, de uma tabela que já utilizei em outros desenvolvimentos que foram postados aqui no LinkedIn. Essa fonte foi a base da ingestão de dados usada em todo o processo de ETL.
 
-## 2️⃣ Ingestão com Airbyte
-Utilizei o **Airbyte**, uma ferramenta open-source que permite configurar conectores para diversas fontes de dados com facilidade, para realizar a ingestão dos dados. O Airbyte faz com que o processo de mover dados de fontes externas para o **PostgreSQL** seja eficiente e automatizado.
+2. **Ingestão com Airbyte:** Utilizei o **Airbyte**, uma ferramenta open-source que permite configurar conectores para diversas fontes de dados com facilidade, para realizar a ingestão dos dados. O Airbyte faz com que o processo de mover dados de fontes externas para o PostgreSQL seja eficiente e automatizado.
 
-## 3️⃣ Armazenamento no PostgreSQL
-Subi um banco de dados **PostgreSQL** no **Render** para armazenar os dados extraídos. Utilizando a camada bronze como a "zona de aterrissagem", os dados foram inicialmente armazenados de forma bruta, prontos para a transformação.
+3. **Armazenamento no PostgreSQL:** Subi um banco de dados **PostgreSQL** no **Render** para armazenar os dados extraídos. Utilizando a camada bronze como a "zona de aterrissagem", os dados foram inicialmente armazenados de forma bruta, prontos para a transformação.
 
-## 4️⃣ Transformação com dbt
-Para transformar os dados da camada bronze para a camada ouro, usei o **dbt Core**, uma ferramenta poderosa para modelagem e transformação de dados. Ele me permitiu criar transformações escaláveis e gerenciáveis diretamente dentro do banco de dados PostgreSQL.
+4. **Transformação com dbt:** Para transformar os dados da camada bronze para a camada ouro, usei o **dbt Core**, uma ferramenta poderosa para modelagem e transformação de dados. Ele me permitiu criar transformações escaláveis e gerenciáveis diretamente dentro do banco de dados PostgreSQL.
 
-## 5️⃣ Orquestração com Airflow
-A automação do pipeline foi possível com o **Apache Airflow**, que orquestrou todo o processo de ingestão (Airbyte), armazenamento (PostgreSQL) e transformação (dbt). Com o Airflow, consegui agendar e monitorar as execuções para garantir que todos os dados estivessem atualizados e prontos para consumo.
+5. **Orquestração com Airflow:** A automação do pipeline foi possível com o **Apache Airflow**, que orquestrou todo o processo de ingestão (Airbyte), armazenamento (PostgreSQL) e transformação (dbt). Com o Airflow, consegui agendar e monitorar as execuções para garantir que todos os dados estivessem atualizados e prontos para consumo.
 
-## 6️⃣ Consumo nas Plataformas de BI
-Finalmente, os dados processados foram disponibilizados para serem consumidos em plataformas de BI como **Power BI**, **Looker** e **Superset**, onde é possível criar dashboards e relatórios para análise dos dados.
+6. **Consumo nas Plataformas de BI:** Finalmente, os dados processados foram disponibilizados para serem consumidos no **Apache Superset**.
+
+7. **Construção do Dashboard:** Para a construção do Dashboard, criei um APP personalizado do Superset em um container, seguindo tutoriais do YouTube. E localmente desenvolvi o relatório utilizando a base final gerada pelo ETL.
 
 Com este pipeline completo, foi possível gerar insights valiosos e automatizar todo o processo de ingestão e transformação de dados, otimizando o fluxo de trabalho e reduzindo o tempo necessário para obter informações acionáveis. 📊
 
@@ -51,6 +55,6 @@ Com este pipeline completo, foi possível gerar insights valiosos e automatizar 
 - **PostgreSQL** (Data Warehouse)
 - **dbt Core** (Transformação de Dados)
 - **Apache Airflow** (Orquestração)
-- **Power BI, Looker e Superset** (Consumo de Dados)
+- **Superset** (Consumo de Dados)
 
-#engenhariadedados #etl #airbyte #postgresql #dbt #airflow #powerbi #looker #superset #pipeline #automacao #datadriven
+#engenhariadedados #etl #airbyte #postgresql #dbt #airflow #superset #pipeline #automacao #datadriven
