@@ -48,6 +48,8 @@ Confira as etapas que segui para construir este pipeline e facilitar a análise 
 
 7. **Construção do Dashboard:** Para a construção do Dashboard, criei um APP personalizado do Superset em um container, seguindo tutoriais do YouTube. E localmente desenvolvi o relatório utilizando a base final gerada pelo ETL.
 
+Obs: para criação do App personalizado, segui os tutoriais do canal https://www.youtube.com/playlist?list=PLH1gsHiD7JxiqIz88CGywds8jSMUEMcs6 por Shantanu Khond.
+
 Com este pipeline completo, foi possível gerar insights valiosos e automatizar todo o processo de ingestão e transformação de dados, otimizando o fluxo de trabalho e reduzindo o tempo necessário para obter informações acionáveis. 📊
 
 ## 🛠️ Ferramentas utilizadas:
