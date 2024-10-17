@@ -32,7 +32,7 @@ Nos últimos dias, trabalhei em um projeto desafiador e gratificante, criando um
 
 Confira as etapas que segui para construir este pipeline e facilitar a análise e visualização de dados em plataformas como Power BI, Looker e Superset:
 
-1. **Fontes de Dados:** Iniciei extraindo dados do Google Sheets, de uma tabela que já utilizei em outros desenvolvimentos que foram postados aqui no LinkedIn. Essa fonte foi a base da ingestão de dados usada em todo o processo de ETL.
+1. **Fontes de Dados:** Iniciei extraindo dados do Google Sheets, de uma tabela que já utilizei em outros desenvolvimentos que foram postados no LinkedIn. Essa fonte foi a base da ingestão de dados usada em todo o processo de ETL.
 
 2. **Ingestão com Airbyte:** Utilizei o **Airbyte**, uma ferramenta open-source que permite configurar conectores para diversas fontes de dados com facilidade, para realizar a ingestão dos dados. O Airbyte faz com que o processo de mover dados de fontes externas para o PostgreSQL seja eficiente e automatizado.
 
