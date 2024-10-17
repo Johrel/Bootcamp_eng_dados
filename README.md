@@ -22,8 +22,6 @@
 
 <h1 align="center">🚀 Criando um Pipeline de Dados Completo com Airbyte, PostgreSQL, dbt e Airflow! 🚀</h1><p align="center">
 
-# 🚀 Criando um Pipeline de Dados Completo com Airbyte, PostgreSQL, dbt e Airflow! 🚀
-
 Nos últimos dias, trabalhei em um projeto desafiador e gratificante, criando uma orquestração de ETL utilizando várias ferramentas que integram a Engenharia de Dados com soluções de BI, com a ajuda de tutoriais do YouTube feitos pelo professor Luciano Vasconcelos Filho.
 
 **Link do canal:** [Jornada de Dados](https://www.youtube.com/@JornadaDeDados)
