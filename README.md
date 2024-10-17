@@ -58,3 +58,5 @@ Com este pipeline completo, foi possível gerar insights valiosos e automatizar 
 - **Superset** (Consumo de Dados)
 
 #engenhariadedados #etl #airbyte #postgresql #dbt #airflow #superset #pipeline #automacao #datadriven
+
+!pics/Superset.JPG
